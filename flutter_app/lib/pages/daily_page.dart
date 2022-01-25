@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/pages/home_page.dart';
 
 class DailyPage extends StatelessWidget {
-  const DailyPage({Key? key}) : super(key: key);
+  DailyPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        SingleChildScrollView(
+            scrollDirection: Axis.horizontal, child: Text("adfdsaf"))
+      ]),
+    );
   }
 }
