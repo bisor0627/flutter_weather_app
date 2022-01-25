@@ -7,11 +7,8 @@ import 'package:flutter_app/pages/daily_page.dart';
 import 'package:flutter_app/pages/daily_weather_page.dart';
 import 'package:flutter_app/pages/hourly_weather_page.dart';
 import 'package:flutter_app/theme/themedata_page.dart';
-import 'package:flutter_app/util.dart';
-import 'package:cupertino_icons/cupertino_icons.dart';
-import 'package:http/retry.dart';
-import 'package:intl/intl.dart';
-import 'package:location/location.dart';
+
+import 'package:geocoding/geocoding.dart';
 
 // Todo! 전역 location data -> mainPage에서만 사용하기
 // Todo! Permission -> main.dart로 이사하기
@@ -40,10 +37,21 @@ class _HomePageState extends State<HomePage>
     super.dispose();
   }
 
+  Future<FutureBuilder> apiDataBuilder() async {
+    APICallService apiCallService = APICallService();
+    CurrentLocation currentLocation = CurrentLocation();
+    return FutureBuilder(
+      future: apiCallService.makeAPICall(
+          futurelocationData: currentLocation.getLocation()),
+      builder: (context, snapshot) {
+        return Text("adfas");
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // ? TabBarView를 아에 Future builder로 감싸는건 이상한가..??
       body: TabBarView(
         children: [MainPage(), const DailyPage(), ThemeDataPage()],
         controller: controller,

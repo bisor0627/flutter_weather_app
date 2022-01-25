@@ -18,7 +18,7 @@ class DailyWeatherWidget extends StatelessWidget {
             Column(
               children: [
                 Text(DateFormat('MM월 dd일').format(getTime(map['dt']))),
-                Text(map['temp'].toString())
+                Text(map['temp']['day'].toString())
               ],
             ),
           ],
@@ -33,8 +33,8 @@ class DailyWeatherWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
+      scrollDirection: Axis.vertical,
+      child: Column(
         children: getListWidget(daily),
       ),
     );
