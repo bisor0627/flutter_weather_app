@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/home_page.dart';
 
-import '../location/current_location.dart';
-
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
 
@@ -20,7 +18,7 @@ class _SplashPageState extends State<SplashPage> {
     const period = Duration(seconds: 1);
     _timer = Timer.periodic(period, (timer) {
       _second--;
-      if (CurrentLocation.location != null) {
+      if (_second == 0) {
         _cancelFlashsaleTimer();
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => const HomePage()),
@@ -41,7 +39,6 @@ class _SplashPageState extends State<SplashPage> {
     if (_second != 0) {
       _startTimer();
     }
-    permissionsAction();
     super.initState();
   }
 
@@ -49,13 +46,6 @@ class _SplashPageState extends State<SplashPage> {
   void dispose() {
     _cancelFlashsaleTimer();
     super.dispose();
-  }
-
-  CurrentLocation currentLocation = CurrentLocation();
-
-  permissionsAction() async {
-    await currentLocation.checkPermissions();
-    currentLocation.getLocation();
   }
 
   @override

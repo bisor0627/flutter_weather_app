@@ -1,36 +1,41 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:location/location.dart';
 
 class CurrentLocation {
   final Location _location = Location();
-  bool _loading = false;
-  static LocationData? location;
-  String? _error;
 
-//permission
-
+//permission----------------------------------
   Future<bool> checkPermissions() async {
+    bool result = false;
+    PermissionStatus requestPermission;
     final PermissionStatus permissionGrantedResult =
         await _location.hasPermission();
-    permissionGrantedResult == PermissionStatus.granted
-        ? null
-        : _requestPermission(permissionGrantedResult);
-    return _checkService();
+
+    if (permissionGrantedResult == PermissionStatus.granted) {
+      result = true;
+    }
+    requestPermission = await _requestPermission(permissionGrantedResult);
+    if (requestPermission == PermissionStatus.granted) {
+      result = true;
+    } else {
+      result = false;
+    }
+    return result;
   }
 
-  Future<void> _requestPermission(
+  Future<PermissionStatus> _requestPermission(
       PermissionStatus permissionGrantedResult) async {
     if (permissionGrantedResult != PermissionStatus.granted) {
       final PermissionStatus permissionRequestedResult =
           await _location.requestPermission();
-      permissionGrantedResult = permissionRequestedResult;
+      return permissionRequestedResult;
+    } else {
+      return permissionGrantedResult;
     }
   }
 
-// service Enable
-
-  Future<bool> _checkService() async {
+// service Enable----------------------------------
+  Future<bool> checkService() async {
     bool serviceEnabledResult = await _location.serviceEnabled();
 
     if (serviceEnabledResult == true) {
@@ -40,22 +45,15 @@ class CurrentLocation {
 
     return serviceEnabledResult;
   }
-
 // get Location
 
   Future<LocationData?> getLocation() async {
-    _error = null;
-    _loading = true;
-
+    LocationData? locationResult;
     try {
-      final LocationData _locationResult = await _location.getLocation();
-
-      location = _locationResult;
-      _loading = false;
+      locationResult = await _location.getLocation();
     } on PlatformException catch (err) {
-      _error = err.code;
-      _loading = false;
+      err.code;
     }
-    return location;
+    return locationResult;
   }
 }

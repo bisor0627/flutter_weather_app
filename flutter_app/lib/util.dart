@@ -9,7 +9,14 @@ printJson(Map<String, dynamic> data) {
   print(prettyprint);
 }
 
-String getTime(int unixEpoch) {
-  return DateFormat.MMMEd()
-      .format(DateTime.fromMillisecondsSinceEpoch(unixEpoch * 1000));
+DateTime getTime(int unixEpoch) {
+  return DateTime.fromMillisecondsSinceEpoch(unixEpoch * 1000);
+}
+
+String getWeather(List weatherList) {
+  String weather = "";
+  for (Map weatherMap in weatherList) {
+    weather = weatherMap['main'];
+  }
+  return weather;
 }

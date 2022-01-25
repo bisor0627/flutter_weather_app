@@ -2,32 +2,79 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/api/api_call.dart';
 import 'package:flutter_app/location/current_location.dart';
+import 'package:flutter_app/pages/current_weather_page.dart';
+import 'package:flutter_app/pages/daily_page.dart';
+import 'package:flutter_app/pages/daily_weather_page.dart';
+import 'package:flutter_app/pages/hourly_weather_page.dart';
 import 'package:flutter_app/theme/themedata_page.dart';
 import 'package:flutter_app/util.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
+import 'package:http/retry.dart';
+import 'package:intl/intl.dart';
+import 'package:location/location.dart';
 
-class HomePage extends StatelessWidget {
+// Todo! 전역 location data -> mainPage에서만 사용하기
+// Todo! Permission -> main.dart로 이사하기
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
+  late TabController controller; //초기값을 줄게 없기 때문에 late
+
+  @override
+  void initState() {
+    // 화면 build전 구동
+    super.initState();
+    controller = TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    // 앱이 종료될 떄
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => ThemeDataPage()));
-              },
-              child: Text("THEME DATA PAGE")),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => MainPage()));
-              },
-              child: Text("WEATHER APP PAGE")),
+      // ? TabBarView를 아에 Future builder로 감싸는건 이상한가..??
+      body: TabBarView(
+        children: [MainPage(), const DailyPage(), ThemeDataPage()],
+        controller: controller,
+      ),
+      bottomNavigationBar: TabBar(
+        // indicatorWeight:
+        labelColor: Colors.blue,
+        tabs: const [
+          Tab(
+            icon: Icon(
+              Icons.looks_one,
+              color: Colors.blue,
+              size: 20,
+            ),
+          ),
+          Tab(
+            icon: Icon(
+              Icons.looks_two,
+              color: Colors.red,
+              size: 20,
+            ),
+          ),
+          Tab(
+            icon: Icon(
+              Icons.looks_3,
+              color: Colors.red,
+              size: 20,
+            ),
+          )
         ],
+        controller: controller,
       ),
     );
   }
@@ -37,6 +84,8 @@ class MainPage extends StatelessWidget {
   MainPage({Key? key}) : super(key: key);
   TextEditingController locationSerchController = TextEditingController();
   APICallService apiCallService = APICallService();
+  CurrentLocation currentLocation = CurrentLocation();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,24 +97,34 @@ class MainPage extends StatelessWidget {
           LocationRow(controller: locationSerchController),
           FutureBuilder<Map<String, dynamic>>(
             future: apiCallService.makeAPICall(
-                lat: CurrentLocation.location!.latitude!,
-                long: CurrentLocation.location!.longitude!),
+                futurelocationData: currentLocation.getLocation()),
             builder: (context, snapshot) {
-              var current = snapshot.data!['current'];
               if (snapshot.connectionState == ConnectionState.done) {
-                print(current['weather']);
-                return CurrentWeatherCard(
-                  timezone: snapshot.data!['timezone'],
-                  unixtime: current['dt'],
-                  temp: current['temp'],
-                  feelsLike: current['feels_like'],
-                  humidity: current['humidity'],
-                  windSpeed: current['wind_speed'],
+                var current = snapshot.data!['current'];
+                List hourly = snapshot.data!['hourly'];
+                List daily = snapshot.data!['daily'];
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      CurrentWeatherWidget(
+                        timezone: snapshot.data!['timezone'],
+                        weather: current['weather'],
+                        unixtime: current['dt'],
+                        temp: current['temp'],
+                        feelsLike: current['feels_like'],
+                        humidity: current['humidity'],
+                        windSpeed: current['wind_speed'],
+                      ),
+                      HourlyWeatherWidget(hourly: hourly),
+                      DailyWeatherWidget(daily: daily)
+                    ],
+                  ),
+                );
+              } else {
+                return Center(
+                  child: Text("loading..."),
                 );
               }
-              return Center(
-                child: Text("loading..."),
-              );
             },
           ),
         ],
@@ -123,37 +182,6 @@ class LocationRow extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class CurrentWeatherCard extends StatelessWidget {
-  const CurrentWeatherCard({
-    Key? key,
-    required this.unixtime,
-    required this.temp,
-    required this.timezone,
-    required this.feelsLike,
-    required this.humidity,
-    required this.windSpeed,
-  }) : super(key: key);
-  final String timezone;
-  final int unixtime;
-  final double temp;
-  final double feelsLike;
-  final int humidity;
-  final double windSpeed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(children: [
-        Text(getTime(unixtime)),
-        Text(temp.toString()),
-        Text(feelsLike.toString()),
-        Text(humidity.toString()),
-        Text(windSpeed.toString())
-      ]),
     );
   }
 }

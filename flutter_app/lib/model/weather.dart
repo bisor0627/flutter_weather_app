@@ -1,3 +1,16 @@
+/**
+ * 
+ * 사용 안  하는 중
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+
 class Weather {
   late double lat;
   late double lon;
