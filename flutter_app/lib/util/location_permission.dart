@@ -1,7 +1,6 @@
-import 'package:flutter/services.dart';
 import 'package:location/location.dart';
 
-class CurrentLocation {
+class PermissionLocation {
   final Location _location = Location();
 
 //permission----------------------------------
@@ -44,16 +43,5 @@ class CurrentLocation {
     serviceEnabledResult = await _location.requestService();
 
     return serviceEnabledResult;
-  }
-// get Location
-
-  Future<LocationData?> getLocation() async {
-    LocationData? locationResult;
-    try {
-      locationResult = await _location.getLocation();
-    } on PlatformException catch (err) {
-      err.code;
-    }
-    return locationResult;
   }
 }

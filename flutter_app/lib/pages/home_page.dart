@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/api/api_call.dart';
-import 'package:flutter_app/location/current_location.dart';
+import 'package:flutter_app/util/api_call.dart';
+import 'package:flutter_app/util/current_location.dart';
+import 'package:flutter_app/util/location_permission.dart';
 import 'package:flutter_app/pages/current_weather_page.dart';
 import 'package:flutter_app/pages/daily_page.dart';
 import 'package:flutter_app/pages/daily_weather_page.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_app/pages/hourly_weather_page.dart';
 import 'package:flutter_app/theme/themedata_page.dart';
 
 import 'package:geocoding/geocoding.dart';
+import 'package:location/location.dart';
 
 // Todo! 전역 location data -> mainPage에서만 사용하기
 // Todo! Permission -> main.dart로 이사하기
@@ -21,39 +23,26 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  late TabController controller; //초기값을 줄게 없기 때문에 late
-
+  Map<String, dynamic> weatherData = {};
+  late TabController controller;
+  // var getData;
   @override
   void initState() {
-    // 화면 build전 구동
     super.initState();
     controller = TabController(length: 3, vsync: this);
   }
 
   @override
   void dispose() {
-    // 앱이 종료될 떄
     controller.dispose();
     super.dispose();
-  }
-
-  Future<FutureBuilder> apiDataBuilder() async {
-    APICallService apiCallService = APICallService();
-    CurrentLocation currentLocation = CurrentLocation();
-    return FutureBuilder(
-      future: apiCallService.makeAPICall(
-          futurelocationData: currentLocation.getLocation()),
-      builder: (context, snapshot) {
-        return Text("adfas");
-      },
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: TabBarView(
-        children: [MainPage(), const DailyPage(), ThemeDataPage()],
+        children: [MainPage(), DailyPage(), ThemeDataPage()],
         controller: controller,
       ),
       bottomNavigationBar: TabBar(
@@ -88,7 +77,7 @@ class _HomePageState extends State<HomePage>
   }
 }
 
-class MainPage extends StatelessWidget {
+class MainPage extends WeatherApiMap {
   MainPage({Key? key}) : super(key: key);
   TextEditingController locationSerchController = TextEditingController();
   APICallService apiCallService = APICallService();
@@ -108,6 +97,7 @@ class MainPage extends StatelessWidget {
                 futurelocationData: currentLocation.getLocation()),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
+                weatherMap = snapshot.data!;
                 var current = snapshot.data!['current'];
                 List hourly = snapshot.data!['hourly'];
                 List daily = snapshot.data!['daily'];
@@ -191,5 +181,22 @@ class LocationRow extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class WeatherApiMap extends StatelessWidget {
+  WeatherApiMap({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold();
+  }
+
+  Map<String, dynamic> _weatherMap = {};
+
+  Map<String, dynamic> get weatherMap => _weatherMap;
+
+  set weatherMap(Map<String, dynamic> weatherMap) {
+    _weatherMap = weatherMap;
+    print(_weatherMap);
   }
 }

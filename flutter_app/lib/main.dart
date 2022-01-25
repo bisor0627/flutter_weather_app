@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'location/current_location.dart';
+import 'package:flutter_app/util/current_location.dart';
+import 'util/location_permission.dart';
 import 'pages/splash_page.dart';
 
 void main() async {
   runApp(MyApp());
 
-  CurrentLocation currentLocation = CurrentLocation();
-  await currentLocation.checkPermissions().then((value) {
+  PermissionLocation _permissionLocation = PermissionLocation();
+  CurrentLocation _currentLocation = CurrentLocation();
+
+  await _permissionLocation.checkPermissions().then((value) {
     print(value);
-    currentLocation.getLocation();
+    _currentLocation.getLocation();
   });
 }
 
