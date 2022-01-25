@@ -10,7 +10,6 @@ void main() async {
   CurrentLocation _currentLocation = CurrentLocation();
 
   await _permissionLocation.checkPermissions().then((value) {
-    print(value);
     _currentLocation.getLocation();
   });
 }

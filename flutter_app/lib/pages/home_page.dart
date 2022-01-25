@@ -1,16 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/util/api_call.dart';
 import 'package:flutter_app/util/current_location.dart';
-import 'package:flutter_app/util/location_permission.dart';
 import 'package:flutter_app/pages/current_weather_page.dart';
 import 'package:flutter_app/pages/daily_page.dart';
 import 'package:flutter_app/pages/daily_weather_page.dart';
 import 'package:flutter_app/pages/hourly_weather_page.dart';
 import 'package:flutter_app/theme/themedata_page.dart';
-
 import 'package:geocoding/geocoding.dart';
-import 'package:location/location.dart';
 
 // Todo! 전역 location data -> mainPage에서만 사용하기
 // Todo! Permission -> main.dart로 이사하기
@@ -77,9 +76,9 @@ class _HomePageState extends State<HomePage>
   }
 }
 
-class MainPage extends WeatherApiMap {
+class MainPage extends StatelessWidget {
   MainPage({Key? key}) : super(key: key);
-  TextEditingController locationSerchController = TextEditingController();
+
   APICallService apiCallService = APICallService();
   CurrentLocation currentLocation = CurrentLocation();
 
@@ -91,13 +90,12 @@ class MainPage extends WeatherApiMap {
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.07,
           ),
-          LocationRow(controller: locationSerchController),
+          LocationRow(),
           FutureBuilder<Map<String, dynamic>>(
             future: apiCallService.makeAPICall(
                 futurelocationData: currentLocation.getLocation()),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                weatherMap = snapshot.data!;
                 var current = snapshot.data!['current'];
                 List hourly = snapshot.data!['hourly'];
                 List daily = snapshot.data!['daily'];
@@ -134,63 +132,89 @@ class MainPage extends WeatherApiMap {
 class LocationRow extends StatelessWidget {
   LocationRow({
     Key? key,
-    required this.controller,
   }) : super(key: key);
-  final TextEditingController controller;
+  TextEditingController locationSerchController = TextEditingController();
+
+  StreamController<Location> textStreamController = StreamController();
+
+  textRead() async {
+    List<Location> result;
+    locationSerchController.addListener(() async {
+      try {
+        result = await locationFromAddress(locationSerchController.text.trim());
+        textStreamController.sink.add(result.first);
+      } catch (e) {
+        print(e);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    List<Location> locations;
+    textRead();
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.1,
-      child: Row(
+      child: Column(
         children: [
-          Flexible(
-            flex: 8,
-            child: SizedBox(
-              height: 40,
-              child: TextFormField(
-                controller: controller,
-                textInputAction: TextInputAction.go,
-                onFieldSubmitted: (value) => FocusScope.of(context).unfocus(),
-                decoration: InputDecoration(
-                    labelText: "Search", //'Details'
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.black26,
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.black26,
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    )),
-              ),
-            ),
-          ),
-          Flexible(
-            flex: 2,
-            child: ElevatedButton(
-                child: Icon(
-                  CupertinoIcons.map_pin_ellipse,
+          Row(
+            children: [
+              Flexible(
+                flex: 8,
+                child: SizedBox(
+                  height: 40,
+                  child: TextFormField(
+                    controller: locationSerchController,
+                    textInputAction: TextInputAction.go,
+                    onFieldSubmitted: (value) =>
+                        FocusScope.of(context).unfocus(),
+                    decoration: InputDecoration(
+                        labelText: "Search", //'Details'
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.black26,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.black26,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(15),
+                        )),
+                  ),
                 ),
-                onPressed: () {}),
+              ),
+              Flexible(
+                flex: 2,
+                child: ElevatedButton(
+                    child: Icon(
+                      CupertinoIcons.map_pin_ellipse,
+                    ),
+                    onPressed: () {}),
+              ),
+            ],
           ),
+          StreamBuilder<Location>(
+            stream: textStreamController.stream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.active) {
+                Location getData = snapshot.data!;
+                print("${snapshot.data} ${snapshot.connectionState}");
+                return Text("${getData.longitude} ${getData.latitude}");
+              }
+              return Text("null");
+            },
+          )
         ],
       ),
     );
   }
 }
 
-class WeatherApiMap extends StatelessWidget {
-  WeatherApiMap({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold();
-  }
-
+class WeatherApiMap {
   Map<String, dynamic> _weatherMap = {};
 
   Map<String, dynamic> get weatherMap => _weatherMap;
