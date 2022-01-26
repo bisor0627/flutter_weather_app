@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/model/weather.dart';
 import 'package:flutter_app/util.dart';
 import 'package:intl/intl.dart';
 
 class HourlyWeatherWidget extends StatelessWidget {
   const HourlyWeatherWidget({Key? key, required this.hourly}) : super(key: key);
-  final List hourly;
+  final List<Hour> hourly;
 
-  List<Widget> getListWidget(List hourly) {
+  List<Widget> getListWidget(List<Hour> hourly) {
     List<Widget> weather = [];
     int count = 0;
-    for (Map map in hourly) {
+    for (Hour map in hourly) {
       weather.add(Padding(
         padding: const EdgeInsets.all(12.0),
         child: Row(
           children: [
-            Text(getWeather(map['weather'])),
+            Text(getWeather(map.weather!)),
             Column(
               children: [
-                Text(DateFormat('dd일 kka').format(getTime(map['dt']))),
-                Text(map['temp'].toString())
+                Text(DateFormat('dd일 kka').format(getTime(map.dt!))),
+                Text(map.temp.toString())
               ],
             ),
           ],

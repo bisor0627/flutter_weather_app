@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/model/weather.dart';
 import 'package:flutter_app/util/api_call.dart';
 import 'package:flutter_app/util/current_location.dart';
 import 'package:flutter_app/pages/current_weather_page.dart';
 import 'package:flutter_app/pages/daily_page.dart';
 import 'package:flutter_app/pages/daily_weather_page.dart';
 import 'package:flutter_app/pages/hourly_weather_page.dart';
-import 'package:flutter_app/theme/themedata_page.dart';
+import 'package:flutter_app/design/themedata_page.dart';
 import 'package:geocoding/geocoding.dart';
 
 // Todo! 전역 location data -> mainPage에서만 사용하기
@@ -81,63 +82,9 @@ class MainPage extends StatelessWidget {
 
   APICallService apiCallService = APICallService();
   CurrentLocation currentLocation = CurrentLocation();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.07,
-          ),
-          LocationRow(),
-          FutureBuilder<Map<String, dynamic>>(
-            future: apiCallService.makeAPICall(
-                futurelocationData: currentLocation.getLocation()),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                var current = snapshot.data!['current'];
-                List hourly = snapshot.data!['hourly'];
-                List daily = snapshot.data!['daily'];
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      CurrentWeatherWidget(
-                        timezone: snapshot.data!['timezone'],
-                        weather: current['weather'],
-                        unixtime: current['dt'],
-                        temp: current['temp'],
-                        feelsLike: current['feels_like'],
-                        humidity: current['humidity'],
-                        windSpeed: current['wind_speed'],
-                      ),
-                      HourlyWeatherWidget(hourly: hourly),
-                      DailyWeatherWidget(daily: daily)
-                    ],
-                  ),
-                );
-              } else {
-                return Center(
-                  child: Text("loading..."),
-                );
-              }
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class LocationRow extends StatelessWidget {
-  LocationRow({
-    Key? key,
-  }) : super(key: key);
   TextEditingController locationSerchController = TextEditingController();
-
   StreamController<Location> textStreamController = StreamController();
-
-  textRead() async {
+  addressStreamer() async {
     List<Location> result;
     locationSerchController.addListener(() async {
       try {
@@ -152,7 +99,46 @@ class LocationRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Location> locations;
-    textRead();
+    addressStreamer();
+    return Scaffold(
+      body: Column(
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.07,
+          ),
+          locationRow(context),
+          FutureBuilder<Map<String, dynamic>>(
+            future: apiCallService.makeAPICall(
+                futurelocationData: currentLocation.getLocation()),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                Weather weather = Weather.fromSnapshot(snapshot);
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      CurrentWeatherWidget(
+                        timezone: weather.timezone!,
+                        unixtime: weather.timezone_offset!,
+                        current: weather.current!,
+                      ),
+                      HourlyWeatherWidget(hourly: weather.hourly!),
+                      DailyWeatherWidget(daily: weather.daily!)
+                    ],
+                  ),
+                );
+              } else {
+                return Center(
+                  child: Text("loading..."),
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget locationRow(BuildContext context) {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.1,
       child: Column(
@@ -202,25 +188,14 @@ class LocationRow extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.active) {
                 Location getData = snapshot.data!;
-                print("${snapshot.data} ${snapshot.connectionState}");
                 return Text("${getData.longitude} ${getData.latitude}");
               }
+              print("${snapshot.connectionState}");
               return Text("null");
             },
           )
         ],
       ),
     );
-  }
-}
-
-class WeatherApiMap {
-  Map<String, dynamic> _weatherMap = {};
-
-  Map<String, dynamic> get weatherMap => _weatherMap;
-
-  set weatherMap(Map<String, dynamic> weatherMap) {
-    _weatherMap = weatherMap;
-    print(_weatherMap);
   }
 }

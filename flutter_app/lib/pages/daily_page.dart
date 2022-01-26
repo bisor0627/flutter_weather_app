@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/model/weather.dart';
 import 'package:flutter_app/pages/current_weather_page.dart';
 import 'package:flutter_app/pages/daily_weather_page.dart';
 import 'package:flutter_app/pages/home_page.dart';
@@ -23,13 +24,13 @@ class DailyPage extends StatelessWidget {
                 futurelocationData: currentLocation.getLocation()),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                List hourly = snapshot.data!['hourly'];
-                List daily = snapshot.data!['daily'];
+                Weather weather = Weather.fromSnapshot(snapshot);
+
                 return SingleChildScrollView(
                   child: Column(
                     children: [
-                      HourlyWeatherWidget(hourly: hourly),
-                      DailyWeatherWidget(daily: daily)
+                      HourlyWeatherWidget(hourly: weather.hourly!),
+                      DailyWeatherWidget(daily: weather.daily!)
                     ],
                   ),
                 );

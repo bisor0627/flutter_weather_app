@@ -38,7 +38,7 @@ class APICallService {
 
     Map<String, dynamic> response;
     var uri = Uri.parse(
-        'https://api.openweathermap.org/data/2.5/onecall?lat=${locationData?.latitude ?? 37.513272}&lon=${locationData?.longitude ?? 127.094317}&exclude=minutely,alerts&appid=${api_key_weather}&units=metric&lang=kr');
+        'https://api.openweathermap.org/data/2.5/onecall?lat=${locationData?.latitude ?? 37.513272}&lon=${locationData?.longitude ?? 37.513272}&exclude=minutely,alerts&appid=${api_key_weather}&units=metric&lang=kr');
 
     print(uri);
     final client = RetryClient(http.Client());
