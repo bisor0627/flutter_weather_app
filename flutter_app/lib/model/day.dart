@@ -1,22 +1,22 @@
 import 'package:flutter_app/model/models.dart';
 
 class Day {
-  final int? dt;
-  final int? sunrise; //
-  final int? sunset; //
-  final int? moonrise; //
-  final int? moonset; //
+  final num? dt;
+  final num? sunrise; //
+  final num? sunset; //
+  final num? moonrise; //
+  final num? moonset; //
   final num? moon_phase; //
   final Temp? temp; //
   final FeelsLike? feels_like; //
-  final int? pressure;
-  final int? humidity;
+  final num? pressure;
+  final num? humidity;
   final num? dew_point;
   final num? wind_speed;
   // final num? wind_deg;
   final num? wind_gust;
   final WeatherID? weather;
-  final int? clouds;
+  final num? clouds;
   final num? pop; //
   final num? uvi; //
 

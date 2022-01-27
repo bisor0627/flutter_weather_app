@@ -18,7 +18,6 @@ class HomePage extends StatelessWidget {
 
   Address address = Address();
   Weather weather = Weather();
-  WeatherData weatherData = WeatherData();
   APICallService apiCallService = APICallService();
   CurrentLocation currentLocation = CurrentLocation();
   TextEditingController locationSerchController = TextEditingController();
@@ -32,7 +31,6 @@ class HomePage extends StatelessWidget {
     this.address = await currentLocation.getLocation();
     weather = await apiCallService.makeAPICall(address: address);
     addressStreamController.add(address);
-    weatherData.setWeather(weather);
   }
 
   /// stream에 검색어를 넣고 api에서 Address(위도와 경도)를 얻음
@@ -44,7 +42,6 @@ class HomePage extends StatelessWidget {
         address = Address.fromLocation(result.first);
         weather = await apiCallService.makeAPICall(address: address);
         addressStreamController.add(address);
-        weatherData.setWeather(weather);
       } catch (e) {
         print(e);
       }

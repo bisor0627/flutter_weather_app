@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/design/textstyles.dart';
 import 'package:flutter_app/model/address.dart';
 import 'package:flutter_app/model/weather.dart';
+import 'package:flutter_app/providers/weather_data.dart';
 import 'package:flutter_app/util/api_call.dart';
 import 'package:flutter_app/util/current_location.dart';
 import 'package:flutter_app/widgets/daily_weather.dart';
 import 'package:flutter_app/widgets/hourly_weather.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:provider/provider.dart';
 
 class DailyPage extends StatelessWidget {
   DailyPage({Key? key}) : super(key: key);
@@ -65,67 +67,58 @@ class DailyPage extends StatelessWidget {
                 ),
               ),
             ),
-            StreamBuilder<Address>(
-              stream: addressStreamController.stream,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.active) {
-                  return Column(
-                    children: [
-                      Column(
+            Column(
+              children: [
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Today",
-                                  textAlign: TextAlign.left,
-                                  style: title3.override(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w200),
-                                ),
-                                Text(
-                                  "---- -- ----",
-                                  textAlign: TextAlign.left,
-                                  style: title3.override(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w200),
-                                ),
-                              ],
-                            ),
+                          Text(
+                            "Today",
+                            textAlign: TextAlign.left,
+                            style: title3.override(
+                                fontSize: 18, fontWeight: FontWeight.w200),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 12.0),
-                            child: HourlyWeatherWidget(hourly: weather.hourly!),
+                          Text(
+                            "---- -- ----",
+                            textAlign: TextAlign.left,
+                            style: title3.override(
+                                fontSize: 18, fontWeight: FontWeight.w200),
                           ),
                         ],
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 16.0),
-                            child: Text(
-                              "Next Forecast",
-                              textAlign: TextAlign.left,
-                              style: title3.override(
-                                  fontSize: 18, fontWeight: FontWeight.w200),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 12.0),
-                            child: DailyWeatherWidget(daily: weather.daily!),
-                          )
-                        ],
-                      )
-                    ],
-                  );
-                }
-                print("${snapshot.connectionState}");
-                return Text("null");
-              },
-            ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12.0),
+                      child: HourlyWeatherWidget(
+                          hourly: context.watch<WeatherData>().weather.hourly!),
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: Text(
+                        "Next Forecast",
+                        textAlign: TextAlign.left,
+                        style: title3.override(
+                            fontSize: 18, fontWeight: FontWeight.w200),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12.0),
+                      child: DailyWeatherWidget(
+                          daily: context.watch<WeatherData>().weather.daily!),
+                    )
+                  ],
+                )
+              ],
+            )
           ],
         ),
       ),

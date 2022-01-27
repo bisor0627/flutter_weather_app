@@ -4,7 +4,7 @@ class Weather {
   final num? lat;
   final num? lon;
   final String? timezone;
-  final int? timezone_offset;
+  final num? timezone_offset;
   final Current? current;
   final List<Day>? daily;
   final List<Hour>? hourly;

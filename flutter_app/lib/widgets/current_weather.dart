@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/design/colors.dart';
 import 'package:flutter_app/design/textstyles.dart';
 import 'package:flutter_app/model/current.dart';
-import 'package:flutter_app/model/weather.dart';
 import 'package:flutter_app/util.dart';
 import 'package:intl/intl.dart';
 

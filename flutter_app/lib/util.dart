@@ -11,8 +11,8 @@ printJson(Map<String, dynamic> data) {
   print(prettyprint);
 }
 
-DateTime getTime(int unixEpoch) {
-  return DateTime.fromMillisecondsSinceEpoch(unixEpoch * 1000);
+DateTime getTime(num unixEpoch) {
+  return DateTime.fromMillisecondsSinceEpoch((unixEpoch as int) * 1000);
 }
 
 Widget getWeatherWidget(WeatherID weatherID,

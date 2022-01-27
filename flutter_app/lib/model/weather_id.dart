@@ -1,5 +1,5 @@
 class WeatherID {
-  final int? id;
+  final num? id;
   final String? main;
   final String? description;
   final String? icon;

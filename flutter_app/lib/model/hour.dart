@@ -1,20 +1,20 @@
 import 'package:flutter_app/model/models.dart';
 
 class Hour {
-  final int? dt;
+  final num? dt;
   final num? temp;
   final num? feels_like;
-  final int? pressure;
-  final int? humidity;
+  final num? pressure;
+  final num? humidity;
   final num? dew_point;
   final num? uvi;
-  final int? clouds;
-  final int? visibility;
+  final num? clouds;
+  final num? visibility;
   final num? wind_speed;
   // final num? wind_deg;
   final num? wind_gust;
   final WeatherID? weather;
-  final int? pop;
+  final num? pop;
 
   Hour(
       {this.dt,

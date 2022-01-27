@@ -1,17 +1,17 @@
 import 'package:flutter_app/model/models.dart';
 
 class Current {
-  final int? dt;
-  final int? sunrise;
-  final int? sunset;
+  final num? dt;
+  final num? sunrise;
+  final num? sunset;
   final num? temp;
   final num? feels_like;
-  final int? pressure;
-  final int? humidity;
+  final num? pressure;
+  final num? humidity;
   final num? dew_point;
   final num? uvi;
-  final int? clouds;
-  final int? visibility;
+  final num? clouds;
+  final num? visibility;
   final num? wind_speed;
 
   /// int -> num
