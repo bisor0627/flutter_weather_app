@@ -2,16 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/design/textstyles.dart';
+import 'package:flutter_app/model/address.dart';
 import 'package:flutter_app/model/weather.dart';
-import 'package:flutter_app/design/image_const.dart';
-import 'package:flutter_app/pages/main_page.dart';
 import 'package:flutter_app/util/api_call.dart';
 import 'package:flutter_app/util/current_location.dart';
-import 'package:flutter_app/pages/current_weather_page.dart';
-import 'package:flutter_app/pages/daily_weather_page.dart';
-import 'package:flutter_app/pages/hourly_weather_page.dart';
-import 'package:flutter_app/widgets/default_box1.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_app/widgets/daily_weather.dart';
+import 'package:flutter_app/widgets/hourly_weather.dart';
 import 'package:geocoding/geocoding.dart';
 
 class DailyPage extends StatelessWidget {
@@ -30,8 +26,7 @@ class DailyPage extends StatelessWidget {
 
   getCurrentAddress() async {
     this.address = await currentLocation.getLocation();
-    weather =
-        await apiCallService.makeAPICall(lat: address.lat!, lon: address.lon!);
+    weather = await apiCallService.makeAPICall(address: address);
     addressStreamController.add(address);
   }
 
@@ -42,8 +37,7 @@ class DailyPage extends StatelessWidget {
       try {
         result = await locationFromAddress(locationSerchController.text.trim());
         address = Address.fromLocation(result.first);
-        weather = await apiCallService.makeAPICall(
-            lat: address.lat!, lon: address.lon!);
+        weather = await apiCallService.makeAPICall(address: address);
         addressStreamController.add(address);
       } catch (e) {
         print(e);

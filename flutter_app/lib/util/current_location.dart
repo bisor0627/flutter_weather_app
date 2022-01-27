@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:flutter_app/model/weather.dart';
+import 'package:flutter_app/model/models.dart';
 import 'package:location/location.dart';
 
 class CurrentLocation {

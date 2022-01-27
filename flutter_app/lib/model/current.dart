@@ -1,3 +1,5 @@
+import 'package:flutter_app/model/models.dart';
+
 class Current {
   final int? dt;
   final int? sunrise;

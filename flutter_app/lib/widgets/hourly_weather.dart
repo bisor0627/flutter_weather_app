@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/design/colors.dart';
 import 'package:flutter_app/design/textstyles.dart';
+import 'package:flutter_app/model/hour.dart';
 import 'package:flutter_app/model/weather.dart';
 import 'package:flutter_app/util.dart';
 import 'package:flutter_app/widgets/default_box1.dart';

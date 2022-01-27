@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/design/colors.dart';
-import 'package:flutter_app/pages/home_page.dart';
+import 'package:flutter_app/pages/tab_page.dart';
 import 'package:flutter_app/widgets/default_box1.dart';
 
 class SplashPage extends StatefulWidget {
@@ -23,7 +22,7 @@ class _SplashPageState extends State<SplashPage> {
       if (_second == 0) {
         _cancelFlashsaleTimer();
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const HomePage()),
+            MaterialPageRoute(builder: (context) => const TabPage()),
             (Route<dynamic> route) => false);
       }
     });

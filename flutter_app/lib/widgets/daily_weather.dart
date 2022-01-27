@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/design/textstyles.dart';
+import 'package:flutter_app/model/day.dart';
 import 'package:flutter_app/model/weather.dart';
 import 'package:flutter_app/util.dart';
 import 'package:flutter_app/widgets/default_box1.dart';
