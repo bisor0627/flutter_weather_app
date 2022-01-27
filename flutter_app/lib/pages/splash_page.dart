@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/design/colors.dart';
 import 'package:flutter_app/pages/home_page.dart';
+import 'package:flutter_app/widgets/default_box1.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -52,7 +54,10 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text("감자감자"),
+        child: DefaultBox1(
+          height: 63,
+          width: 300,
+        ),
       ),
     );
   }

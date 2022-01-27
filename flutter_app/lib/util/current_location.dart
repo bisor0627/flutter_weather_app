@@ -1,17 +1,19 @@
 import 'package:flutter/services.dart';
+import 'package:flutter_app/model/weather.dart';
 import 'package:location/location.dart';
 
 class CurrentLocation {
   final Location _location = Location();
 // get Location
 
-  Future<LocationData?> getLocation() async {
+  Future<Address> getLocation() async {
     LocationData? locationResult;
     try {
       locationResult = await _location.getLocation();
     } on PlatformException catch (err) {
       err.code;
     }
-    return locationResult;
+
+    return Address.fromLocationData(locationResult);
   }
 }

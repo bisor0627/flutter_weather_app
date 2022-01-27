@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/design/colors.dart';
 import 'package:flutter_app/util/current_location.dart';
 import 'util/location_permission.dart';
 import 'pages/splash_page.dart';
@@ -19,7 +20,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(),
+      theme: ThemeData(
+          // scaffoldBackgroundColor: backgroundLight,
+          canvasColor: indigo_400),
       home: SplashPage(),
     );
   }

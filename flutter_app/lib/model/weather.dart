@@ -1,16 +1,30 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:location/location.dart' as loca;
 
-List<Weather> productsResponseFromJson(String str) =>
-    List<Weather>.from(json.decode(str).map((x) {
-      print(x);
-      Weather.fromSnapshot(x);
-    }));
-
-class Weather {
+class Address {
   final double? lat;
   final double? lon;
+  Address({this.lat, this.lon});
+  factory Address.fromLocation(Location location) {
+    return Address(lat: location.latitude, lon: location.longitude);
+  }
+  factory Address.fromLocationData(loca.LocationData? locationData) {
+    return Address(lat: locationData!.latitude, lon: locationData.longitude);
+  }
+}
+
+// List<Weather> productsResponseFromJson(String str) =>
+//     List<Weather>.from(json.decode(str).map((x) {
+//       print(x);
+//       Weather.fromSnapshot(x);
+//     }));
+
+class Weather {
+  final num? lat;
+  final num? lon;
   final String? timezone;
   final int? timezone_offset;
   final Current? current;
@@ -26,17 +40,20 @@ class Weather {
       this.daily,
       this.hourly});
 
-  factory Weather.fromSnapshot(AsyncSnapshot<Map<String, dynamic>> snapshot) {
+  factory Weather.fromSnapshot(Map<String, dynamic> snapshot) {
     return Weather(
-        lat: snapshot.data!['lat'] ?? 0.0,
-        lon: snapshot.data!['lon'] ?? 0.0,
-        timezone: snapshot.data!['timezone'] ?? "",
-        timezone_offset: snapshot.data!['timezone_offset'] ?? 0,
-        current: Current.fromSnapshot(snapshot.data!['current']),
-        daily: List<Day>.from(
-            snapshot.data!['daily'].map((x) => Day.fromSnapshot(x))),
+        lat: snapshot['lat'] ?? 0.0,
+        lon: snapshot['lon'] ?? 0.0,
+        timezone: snapshot['timezone'] ?? "",
+        timezone_offset: snapshot['timezone_offset'] ?? 0,
+        current: Current.fromSnapshot(snapshot['current']),
+        daily: (snapshot['daily'] as List<dynamic>)
+            .map((e) => Day.fromSnapshot(e))
+            .toList(),
+        // daily:
+        //     List<Day>.from(snapshot['daily'].map((x) => Day.fromSnapshot(x))),
         hourly: List<Hour>.from(
-            snapshot.data!['hourly'].map((x) => Hour.fromSnapshot(x))));
+            snapshot['hourly'].map((x) => Hour.fromSnapshot(x))));
   }
 }
 
@@ -44,16 +61,20 @@ class Current {
   final int? dt;
   final int? sunrise;
   final int? sunset;
-  final double? temp;
-  final double? feels_like;
+  final num? temp;
+  final num? feels_like;
   final int? pressure;
   final int? humidity;
-  final double? dew_point;
-  final double? uvi;
+  final num? dew_point;
+  final num? uvi;
   final int? clouds;
   final int? visibility;
-  final double? wind_speed;
-  // final double? wind_deg;
+  final num? wind_speed;
+
+  /// int -> num
+  /// num->int
+  /// 계속 에러 발생함
+  final num? wind_deg;
   final WeatherID? weather;
 
   Current(
@@ -69,7 +90,7 @@ class Current {
       this.clouds,
       this.visibility,
       this.wind_speed,
-      // this.wind_deg,
+      this.wind_deg,
       this.weather});
   factory Current.fromSnapshot(Map<String, dynamic> snapshot) {
     return Current(
@@ -85,7 +106,7 @@ class Current {
         clouds: snapshot['clouds'],
         visibility: snapshot['visibillity'],
         wind_speed: snapshot['wind_speed'],
-        // wind_deg: double.parse(snapshot['wind_speed']),
+        // wind_deg: num.parse(snapshot['wind_speed']),
         weather: WeatherID.fromSnapshot(snapshot['weather'][0]));
   }
 }
@@ -109,17 +130,17 @@ class WeatherID {
 
 class Hour {
   final int? dt;
-  final double? temp;
-  final double? feels_like;
+  final num? temp;
+  final num? feels_like;
   final int? pressure;
   final int? humidity;
-  final double? dew_point;
-  final double? uvi;
+  final num? dew_point;
+  final num? uvi;
   final int? clouds;
   final int? visibility;
-  final double? wind_speed;
-  // final double? wind_deg;
-  final double? wind_gust;
+  final num? wind_speed;
+  // final num? wind_deg;
+  final num? wind_gust;
   final WeatherID? weather;
   final int? pop;
 
@@ -143,16 +164,16 @@ class Hour {
     return Hour(
         dt: snapshot['dt'],
         temp: snapshot['temp'],
-        feels_like: snapshot['feels_like'],
+        feels_like: 0.0, //snapshot['feels_like']
         pressure: snapshot['pressure'],
         humidity: snapshot['humidity'],
         // dew_point: snapshot['dew_point'],
         // uvi: snapshot['uvi'],
         clouds: snapshot['clouds'],
         visibility: snapshot['visibility'],
-        wind_speed: snapshot['wind_speed'],
+        // wind_speed: snapshot['wind_speed'],
         // wind_deg: snapshot['wind_deg'],
-        wind_gust: snapshot['wind_gust'],
+        // wind_gust: snapshot['wind_gust'],
         weather: WeatherID.fromSnapshot(snapshot['weather'][0]),
         pop: snapshot['pop']);
   }
@@ -164,19 +185,19 @@ class Day {
   final int? sunset; //
   final int? moonrise; //
   final int? moonset; //
-  final double? moon_phase; //
+  final num? moon_phase; //
   final Temp? temp; //
   final FeelsLike? feels_like; //
   final int? pressure;
   final int? humidity;
-  final double? dew_point;
-  final double? wind_speed;
-  // final double? wind_deg;
-  final double? wind_gust;
+  final num? dew_point;
+  final num? wind_speed;
+  // final num? wind_deg;
+  final num? wind_gust;
   final WeatherID? weather;
   final int? clouds;
-  final double? pop; //
-  final double? uvi; //
+  final num? pop; //
+  final num? uvi; //
 
   Day(
       {this.dt,
@@ -214,7 +235,7 @@ class Day {
         dew_point: snapshot['dew_point'],
         wind_speed: snapshot['wind_speed'],
         // wind_deg: snapshot['wind_deg'],
-        wind_gust: snapshot['wind_gust'],
+        // wind_gust: snapshot['wind_gust'],
         weather: WeatherID.fromSnapshot(snapshot['weather'][0]),
         clouds: snapshot['clouds']
         //pop: snapshot['pop'],
@@ -224,31 +245,32 @@ class Day {
 }
 
 class Temp {
-  final double? day;
-  final double? min;
-  final double? max;
-  final double? night;
-  final double? eve;
-  final double? morn;
+  final num? day;
+  final num? min;
+  final num? max;
+  final num? night;
+  final num? eve;
+  final num? morn;
 
   Temp({this.day, this.min, this.max, this.night, this.eve, this.morn});
 
   factory Temp.fromSnapshot(Map<String, dynamic> snapshot) {
     return Temp(
-        day: snapshot['day'],
-        min: snapshot['min'],
-        max: snapshot['max'],
-        night: snapshot['night'],
-        eve: snapshot['eve'],
-        morn: snapshot['morn']);
+      day: snapshot['day'] ?? 0.1,
+      // min: snapshot['min'],
+      // max: snapshot['max'],
+      // night: snapshot['night'],
+      // eve: snapshot['eve'],
+      // morn: snapshot['morn']
+    );
   }
 }
 
 class FeelsLike {
-  final double? day;
-  final double? night;
-  final double? eve;
-  final double? morn;
+  final num? day;
+  final num? night;
+  final num? eve;
+  final num? morn;
 
   FeelsLike({this.day, this.night, this.eve, this.morn});
 
