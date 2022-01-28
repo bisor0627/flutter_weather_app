@@ -1,61 +1,22 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app/design/textstyles.dart';
-import 'package:flutter_app/model/address.dart';
-import 'package:flutter_app/model/weather.dart';
 import 'package:flutter_app/providers/weather_data.dart';
-import 'package:flutter_app/util/api_call.dart';
-import 'package:flutter_app/util/current_location.dart';
+import 'package:flutter_app/util.dart';
 import 'package:flutter_app/widgets/daily_weather.dart';
 import 'package:flutter_app/widgets/hourly_weather.dart';
-import 'package:geocoding/geocoding.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class DailyPage extends StatelessWidget {
   DailyPage({Key? key}) : super(key: key);
 
-  Address address = Address();
-  Weather weather = Weather();
-  APICallService apiCallService = APICallService();
-  CurrentLocation currentLocation = CurrentLocation();
-  TextEditingController locationSerchController = TextEditingController();
-
-  StreamController<Address> addressStreamController =
-      StreamController.broadcast();
-  StreamController<Weather> weatherStreamController =
-      StreamController.broadcast();
-
-  getCurrentAddress() async {
-    this.address = await currentLocation.getLocation();
-    weather = await apiCallService.makeAPICall(address: address);
-    addressStreamController.add(address);
-  }
-
-  /// stream에 검색어를 넣고 api에서 Address(위도와 경도)를 얻음
-  addressStreamer() async {
-    List<Location> result;
-    locationSerchController.addListener(() async {
-      try {
-        result = await locationFromAddress(locationSerchController.text.trim());
-        address = Address.fromLocation(result.first);
-        weather = await apiCallService.makeAPICall(address: address);
-        addressStreamController.add(address);
-      } catch (e) {
-        print(e);
-      }
-    });
-  }
-
-  /// api에 Address(위도와 경도)를 넣고 stream에 Weather을 넣음
-
   @override
   Widget build(BuildContext context) {
-    getCurrentAddress();
-    addressStreamer();
+    final weatherData = Provider.of<WeatherData>(context);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.17,
@@ -67,66 +28,37 @@ class DailyPage extends StatelessWidget {
                 ),
               ),
             ),
-            Column(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Today",
-                            textAlign: TextAlign.left,
-                            style: title3.override(
-                                fontSize: 18, fontWeight: FontWeight.w200),
-                          ),
-                          Text(
-                            "---- -- ----",
-                            textAlign: TextAlign.left,
-                            style: title3.override(
-                                fontSize: 18, fontWeight: FontWeight.w200),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 12.0),
-                      child: HourlyWeatherWidget(
-                          hourly: context.watch<WeatherData>().weather.hourly!),
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 16.0),
-                      child: Text(
-                        "Next Forecast",
-                        textAlign: TextAlign.left,
-                        style: title3.override(
-                            fontSize: 18, fontWeight: FontWeight.w200),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 12.0),
-                      child: DailyWeatherWidget(
-                          daily: context.watch<WeatherData>().weather.daily!),
-                    )
-                  ],
-                )
+                MiniTitle(title: "Today"),
+                MiniTitle(
+                    title:
+                        "${DateFormat.MMMMd().format(getTime(weatherData.weather.current!.dt!))}"),
               ],
-            )
+            ),
+            HourlyWeatherWidget(),
+            MiniTitle(title: "Next Forecast"),
+            DailyWeatherWidget()
           ],
         ),
       ),
     );
   }
+}
 
-  void mapButtonAction() {
-    getCurrentAddress();
-    locationSerchController.text = "";
+class MiniTitle extends StatelessWidget {
+  const MiniTitle({
+    Key? key,
+    required this.title,
+  }) : super(key: key);
+  final String title;
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      "$title",
+      textAlign: TextAlign.left,
+      style: title3.override(fontSize: 18, fontWeight: FontWeight.w200),
+    );
   }
 }

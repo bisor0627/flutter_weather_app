@@ -11,4 +11,8 @@ class Address {
   factory Address.fromLocationData(loca.LocationData? locationData) {
     return Address(lat: locationData!.latitude, lon: locationData.longitude);
   }
+  factory Address.fromDouble(
+      {required double latitude, required double longitude}) {
+    return Address(lat: latitude, lon: longitude);
+  }
 }

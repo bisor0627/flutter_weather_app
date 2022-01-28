@@ -8,6 +8,9 @@ class WeatherData with ChangeNotifier {
   Weather get weather => _weather;
 
   void setWeatherFromAddress(Address address) async {
+    if (address.lat == null || address.lon == null) {
+      address = Address.fromDouble(latitude: 37.513272, longitude: 127.094317);
+    }
     _weather = await apiCallService.makeAPICall(address: address);
     print("set Weather From Address ${_weather.timezone}");
     notifyListeners();

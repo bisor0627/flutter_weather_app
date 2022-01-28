@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/%20test_page.dart';
 import 'package:flutter_app/pages/home_page.dart';
 import 'package:flutter_app/pages/daily_page.dart';
 
@@ -14,13 +13,12 @@ class TabPage extends StatefulWidget {
 
 class _HomePageState extends State<TabPage>
     with SingleTickerProviderStateMixin {
-  Map<String, dynamic> weatherData = {};
   late TabController controller;
-  // var getData;
+
   @override
   void initState() {
     super.initState();
-    controller = TabController(length: 3, vsync: this);
+    controller = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -33,7 +31,7 @@ class _HomePageState extends State<TabPage>
   Widget build(BuildContext context) {
     return Scaffold(
       body: TabBarView(
-        children: [HomePage(), DailyPage(), TestPage()],
+        children: [HomePage(), DailyPage()],
         controller: controller,
       ),
       bottomNavigationBar: TabBar(
@@ -44,13 +42,6 @@ class _HomePageState extends State<TabPage>
             icon: Icon(
               Icons.looks_one,
               color: Colors.blue,
-              size: 20,
-            ),
-          ),
-          Tab(
-            icon: Icon(
-              Icons.looks_two,
-              color: Colors.red,
               size: 20,
             ),
           ),

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/design/textstyles.dart';
 import 'package:flutter_app/model/day.dart';
-import 'package:flutter_app/model/weather.dart';
+import 'package:flutter_app/providers/weather_data.dart';
 import 'package:flutter_app/util.dart';
 import 'package:flutter_app/widgets/default_box1.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class DailyWeatherWidget extends StatelessWidget {
-  const DailyWeatherWidget({Key? key, required this.daily}) : super(key: key);
-  final List<Day> daily;
+  const DailyWeatherWidget({Key? key}) : super(key: key);
 
   List<Widget> getListWidget(List<Day> daily, BuildContext context) {
     List<Widget> weather = [];
@@ -16,7 +16,7 @@ class DailyWeatherWidget extends StatelessWidget {
     for (Day map in daily) {
       if (count != 0) {
         weather.add(Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: DefaultBox1(
             height: 74,
             width: MediaQuery.of(context).size.width * 0.9,
@@ -26,24 +26,27 @@ class DailyWeatherWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        DateFormat.EEEE().format(getTime(map.dt!)),
-                        style: title2,
-                      ),
-                      Text(
-                        DateFormat.MMMd().format(getTime(map.dt!)),
-                        style: title3,
-                      ),
-                    ],
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          DateFormat.EEEE().format(getTime(map.dt!)),
+                          style: title2,
+                        ),
+                        Text(
+                          DateFormat.MMMd().format(getTime(map.dt!)),
+                          style: title3,
+                        ),
+                      ],
+                    ),
                   ),
                   Text(
                     "${map.temp!.day?.toStringAsFixed(1)} c",
                     style: title1,
                   ),
-                  getWeatherWidget(map.weather!, width: 60, height: 60),
+                  getWeatherWidget(map.weather!,
+                      width: 60, height: 60, lightBackground: true),
                 ],
               ),
             ),
@@ -59,9 +62,9 @@ class DailyWeatherWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final weatherData = Provider.of<WeatherData>(context);
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: getListWidget(daily, context),
+      children: getListWidget(weatherData.weather.daily!, context),
     );
   }
 }

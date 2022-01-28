@@ -2,21 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/design/colors.dart';
 import 'package:flutter_app/design/textstyles.dart';
 import 'package:flutter_app/model/hour.dart';
-import 'package:flutter_app/model/weather.dart';
+import 'package:flutter_app/providers/weather_data.dart';
 import 'package:flutter_app/util.dart';
 import 'package:flutter_app/widgets/default_box1.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class HourlyWeatherWidget extends StatelessWidget {
-  const HourlyWeatherWidget({Key? key, required this.hourly}) : super(key: key);
-  final List<Hour> hourly;
-
+  HourlyWeatherWidget({
+    Key? key,
+  }) : super(key: key);
+  int count = 0;
   List<Widget> getListWidget(List<Hour> hourly) {
     List<Widget> weather = [];
-    int count = 0;
+
     for (Hour map in hourly) {
       weather.add(Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        padding: const EdgeInsets.only(right: 12.0),
         child: DefaultBox1(
           height: 80,
           width: 166,
@@ -24,7 +26,10 @@ class HourlyWeatherWidget extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              getWeatherWidget(map.weather!, height: 60, width: 60),
+              getWeatherWidget(map.weather!,
+                  height: 60,
+                  width: 60,
+                  lightBackground: count == 0 ? false : true),
               Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: Column(
@@ -60,12 +65,13 @@ class HourlyWeatherWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final weatherData = Provider.of<WeatherData>(context);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
+      child: SizedBox(
+        height: 100,
         child: Row(
-          children: getListWidget(hourly),
+          children: getListWidget(weatherData.weather.hourly!),
         ),
       ),
     );

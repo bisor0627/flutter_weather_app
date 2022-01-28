@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/design/image_const.dart';
-import 'package:flutter_app/design/textstyles.dart';
+import 'package:flutter_app/design/colors.dart';
 import 'package:flutter_app/model/models.dart';
+import 'package:flutter_svg/svg.dart';
 
 printJson(Map<String, dynamic> data) {
   JsonEncoder encoder = new JsonEncoder.withIndent('  ');
@@ -16,26 +16,17 @@ DateTime getTime(num unixEpoch) {
 }
 
 Widget getWeatherWidget(WeatherID weatherID,
-    {required double height, required double width}) {
+    {required double height,
+    required double width,
+    bool? lightBackground = false}) {
   String weather = "";
   Widget result;
-  weather = weatherID.main!;
-  switch (weather) {
-    case "Clouds":
-      result = Image.asset(
-        img_mooncloudmid,
-        height: height,
-        width: width,
-        fit: BoxFit.cover,
-      );
-      break;
-
-    default:
-      result = Text(
-        weather,
-        textAlign: TextAlign.center,
-        style: title3,
-      );
-  }
+  result = SvgPicture.asset(
+    "assets/images/${weatherID.icon!}.svg",
+    color: lightBackground == false ? Colors.white : indigo_400,
+    height: height,
+    width: width,
+    fit: BoxFit.cover,
+  );
   return result;
 }

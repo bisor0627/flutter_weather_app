@@ -31,7 +31,10 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
     final SearchData searchData = Provider.of<SearchData>(context);
     return TextFormField(
         controller: widget.controller,
-        onChanged: (changed) => searchData.setkeyword(changed),
+        onChanged: (changed) {
+          searchData.setkeyword(changed);
+          // context.watch<WeatherData>().setWeatherFromAddress(address);
+        },
         textInputAction: TextInputAction.go,
         onFieldSubmitted: (value) => FocusScope.of(context).unfocus(),
         cursorColor: whiteA700,
