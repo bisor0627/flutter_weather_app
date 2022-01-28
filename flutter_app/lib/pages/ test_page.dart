@@ -6,6 +6,7 @@ import 'package:flutter_app/design/image_const.dart';
 import 'package:flutter_app/design/textstyles.dart';
 import 'package:flutter_app/model/address.dart';
 import 'package:flutter_app/model/weather.dart';
+import 'package:flutter_app/providers/search_data.dart';
 import 'package:flutter_app/providers/weather_data.dart';
 import 'package:flutter_app/util/api_call.dart';
 import 'package:flutter_app/util/current_location.dart';
@@ -27,33 +28,38 @@ class TestPage extends StatelessWidget {
 
   APICallService apiCallService = APICallService();
   CurrentLocation currentLocation = CurrentLocation();
+
   TextEditingController locationSerchController = TextEditingController();
 
-  addressStreamer(BuildContext context) async {
-    List<Location> result;
-    locationSerchController.addListener(() async {
-      try {
-        result = await locationFromAddress(locationSerchController.text.trim());
-        address = Address.fromLocation(result.first);
-        weather = await apiCallService.makeAPICall(address: address);
-        context.watch<WeatherData>().setWeather(weather);
-      } catch (e) {
-        print(e);
-      }
-    });
-  }
+  // addressStreamer(BuildContext context) async {
+  //   List<Location> result;
+  //   locationSerchController.addListener(() async {
+  //     try {
+  //       result = await locationFromAddress(locationSerchController.text.trim());
+  //       address = Address.fromLocation(result.first);
+  //       weather = await apiCallService.makeAPICall(address: address);
+  //       context.watch<WeatherData>().setWeather(weather);
+  //     } catch (e) {
+  //       print(e);
+  //     }
+  //   });
+  // }
 
-  getCurrentAddress(BuildContext context) async {
-    weather = await apiCallService.makeAPICall(
-        address: await currentLocation.getLocation());
-    locationSerchController.text = "";
-    context.watch<WeatherData>().setWeather(weather);
-  }
+  // getCurrentAddress(BuildContext context) async {
+  //   weather = await apiCallService.makeAPICall(
+  //       address: await currentLocation.getLocation());
+  //   locationSerchController.text = "";
+  //   context.watch<WeatherData>().setWeather(weather);
+  // }
 
   @override
   Widget build(BuildContext context) {
-    getCurrentAddress(context);
-    addressStreamer(context);
+    // final SearchData searchData =
+    //     Provider.of<SearchData>(context, listen: false);
+    // final SearchData searchData = Provider.of<SearchData>(context);
+    // locationSerchController = TextEditingController(text: searchData.keyword);
+    // getCurrentAddress(context);
+    // addressStreamer(context);
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -69,32 +75,9 @@ class TestPage extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Stack(children: [
-                      // TextFormField(
-                      //   controller: locationSerchController,
-                      //   textInputAction: TextInputAction.go,
-                      //   onFieldSubmitted: (value) =>
-                      //       FocusScope.of(context).unfocus(),
-                      //   cursorColor: whiteA700,
-                      //   style: TextStyle(
-                      //       fontFamily: primaryFontFamily,
-                      //       color: Colors.white,
-                      //       fontWeight: FontWeight.w200,
-                      //       fontSize: 18,
-                      //       height: 1),
-                      //   decoration: const InputDecoration(
-                      //     hintText: "Search",
-                      //     hintStyle: TextStyle(
-                      //         fontFamily: primaryFontFamily,
-                      //         color: Colors.white,
-                      //         fontWeight: FontWeight.w100,
-                      //         fontSize: 18,
-                      //         height: 1),
-                      //     contentPadding:
-                      //         EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                      //     border: InputBorder.none,
-                      //   ),
-                      // ),
-                      AddressSearchWidget(),
+                      AddressSearchWidget(
+                        controller: locationSerchController,
+                      ),
                       Align(
                         alignment: Alignment.centerRight,
                         child: SvgPicture.asset(
@@ -158,7 +141,7 @@ class TestPage extends StatelessWidget {
               ],
             ),
           ),
-          // Example(),
+          Example(),
         ],
       ),
     );

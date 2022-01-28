@@ -7,7 +7,6 @@ class SearchData with ChangeNotifier {
 
   setkeyword(String keyword) {
     _keyword = keyword;
-    print(_keyword);
     notifyListeners();
   }
 }
