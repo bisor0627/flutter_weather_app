@@ -37,7 +37,7 @@ class _AddressSearchWidgetState extends State<AddressSearchWidget> {
         },
         textInputAction: TextInputAction.go,
         onFieldSubmitted: (value) => FocusScope.of(context).unfocus(),
-        cursorColor: whiteA700,
+        cursorColor: Colors.white,
         style: title3.override(fontWeight: FontWeight.w200, fontSize: 20),
         decoration: const InputDecoration(
             hintText: "Search",

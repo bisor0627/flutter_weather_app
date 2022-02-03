@@ -1,25 +1,27 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
-Color bluegray_900 = fromHex('#262e3b');
+var brightness = SchedulerBinding.instance!.window.platformBrightness;
 
-Color indigo_400 = fromHex('#547dad');
+/// *light & dark mode* background
+Color background =
+    brightness == Brightness.light ? fromHex('828CAE') : fromHex('101A39');
 
-Color indigo_200 = fromHex('#a8b5e0');
+/// *light & dark mode* Accent Button
+Color lilac = fromHex('A7B4E0');
 
-Color black_900 = fromHex('#000000');
+/// *dark mode* Default Button
+Color charcoal = fromHex('2C303F');
 
-Color bluegray_400 = fromHex('#888888');
+/// *dark mode* Tabbar Background
+Color darkNavy = fromHex('101A39');
 
-Color black_900_40 = fromHex('#40000000');
+/// *dark mode* Tabbar Icon
+Color softNavy = fromHex('557EAE');
 
-Color gray_900 = fromHex('#050d26');
-
-Color indigoA200 = fromHex('#5778e0');
-
-Color indigo_900 = fromHex('#002687');
-
-Color whiteA700 = fromHex('#ffffff');
+/// *light mode* TextButton
+Color navy = fromHex('002688');
 
 Color fromHex(String hexString) {
   final buffer = StringBuffer();

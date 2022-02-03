@@ -77,7 +77,10 @@ class HomePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     MiniTitle(title: "Today"),
-                    HourlyWeatherWidget(),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.2,
+                      child: HourlyWeatherWidget(),
+                    )
                   ],
                 ),
               ),
@@ -126,7 +129,7 @@ class HomePage extends StatelessWidget {
         icon_map_pin,
       ),
       style: ElevatedButton.styleFrom(
-          primary: indigo_200,
+          primary: lilac,
           shadowColor: Colors.black,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),

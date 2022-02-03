@@ -19,7 +19,7 @@ class DailyWeatherWidget extends StatelessWidget {
     for (Day map in daily) {
       if (count != 0) {
         weather.add(Padding(
-          padding: const EdgeInsets.only(bottom: 12.0),
+          padding: const EdgeInsets.only(bottom: 12.0, left: 4, right: 4),
           child: DefaultBox1(
             height: 74,
             width: setPortrait
@@ -70,23 +70,15 @@ class DailyWeatherWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final weatherData = Provider.of<WeatherData>(context);
+
     if (setPortrait) {
-      return SizedBox(
-        height: MediaQuery.of(context).size.height * 0.6,
-        child: ListView(
-          children: getListWidget(weatherData.weather.daily!, context),
-        ),
+      return ListView(
+        children: getListWidget(weatherData.weather.daily!, context),
       );
     } else {
-      return LayoutBuilder(builder: (context, constraints) {
-        return SizedBox(
-          height: constraints.maxHeight,
-          width: constraints.maxWidth,
-          child: ListView(
-            children: getListWidget(weatherData.weather.daily!, context),
-          ),
-        );
-      });
+      return ListView(
+        children: getListWidget(weatherData.weather.daily!, context),
+      );
     }
   }
 }

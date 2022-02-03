@@ -8,11 +8,12 @@ import 'pages/splash_page.dart';
 import 'package:device_preview/device_preview.dart';
 
 void main() => runApp(
-    // DevicePreview(
-    //   enabled: !kReleaseMode,
-    //   builder: (context) => MyApp(), // Wrap your app
-    // ),
-    MyApp());
+      DevicePreview(
+        enabled: !kReleaseMode,
+        builder: (context) => MyApp(), // Wrap your app
+      ),
+      // MyApp()
+    );
 
 class MyApp extends StatelessWidget {
   @override
@@ -26,8 +27,8 @@ class MyApp extends StatelessWidget {
         useInheritedMediaQuery: true,
         locale: DevicePreview.locale(context),
         builder: DevicePreview.appBuilder,
-        theme: ThemeData(canvasColor: indigo_400),
-        darkTheme: ThemeData.dark(),
+        theme: ThemeData(canvasColor: background),
+        darkTheme: ThemeData(canvasColor: background),
         home: SplashPage(),
       ),
     );
