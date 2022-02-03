@@ -8,18 +8,23 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class DailyWeatherWidget extends StatelessWidget {
-  const DailyWeatherWidget({Key? key}) : super(key: key);
-
+  const DailyWeatherWidget({
+    Key? key,
+    this.setPortrait = true,
+  }) : super(key: key);
+  final bool setPortrait;
   List<Widget> getListWidget(List<Day> daily, BuildContext context) {
     List<Widget> weather = [];
     int count = 0;
     for (Day map in daily) {
       if (count != 0) {
         weather.add(Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          padding: const EdgeInsets.only(bottom: 12.0),
           child: DefaultBox1(
             height: 74,
-            width: MediaQuery.of(context).size.width * 0.9,
+            width: setPortrait
+                ? MediaQuery.of(context).size.width * 0.9
+                : MediaQuery.of(context).size.width * 0.3,
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Row(
@@ -46,7 +51,9 @@ class DailyWeatherWidget extends StatelessWidget {
                     style: title1,
                   ),
                   getWeatherWidget(map.weather!,
-                      width: 60, height: 60, lightBackground: true),
+                      width: MediaQuery.of(context).size.height * 0.06,
+                      height: MediaQuery.of(context).size.height * 0.06,
+                      lightBackground: true),
                 ],
               ),
             ),
@@ -63,8 +70,23 @@ class DailyWeatherWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final weatherData = Provider.of<WeatherData>(context);
-    return Column(
-      children: getListWidget(weatherData.weather.daily!, context),
-    );
+    if (setPortrait) {
+      return SizedBox(
+        height: MediaQuery.of(context).size.height * 0.6,
+        child: ListView(
+          children: getListWidget(weatherData.weather.daily!, context),
+        ),
+      );
+    } else {
+      return LayoutBuilder(builder: (context, constraints) {
+        return SizedBox(
+          height: constraints.maxHeight,
+          width: constraints.maxWidth,
+          child: ListView(
+            children: getListWidget(weatherData.weather.daily!, context),
+          ),
+        );
+      });
+    }
   }
 }

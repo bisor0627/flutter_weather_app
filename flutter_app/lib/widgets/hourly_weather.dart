@@ -11,24 +11,32 @@ import 'package:provider/provider.dart';
 class HourlyWeatherWidget extends StatelessWidget {
   HourlyWeatherWidget({
     Key? key,
+    this.setPortrait = true,
   }) : super(key: key);
+  final bool setPortrait;
   int count = 0;
-  List<Widget> getListWidget(List<Hour> hourly) {
+  List<Widget> getListWidget(List<Hour> hourly, BuildContext context) {
     List<Widget> weather = [];
 
     for (Hour map in hourly) {
       weather.add(Padding(
-        padding: const EdgeInsets.only(right: 12.0),
+        padding: setPortrait
+            ? const EdgeInsets.only(right: 12.0)
+            : const EdgeInsets.only(bottom: 12.0),
         child: DefaultBox1(
-          height: 80,
-          width: 166,
+          height: setPortrait
+              ? MediaQuery.of(context).size.height * 0.1
+              : MediaQuery.of(context).size.height * 0.15,
+          width: setPortrait
+              ? MediaQuery.of(context).size.width * 0.42
+              : MediaQuery.of(context).size.height * 0.45,
           color: count == 0 ? null : whiteA700,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               getWeatherWidget(map.weather!,
-                  height: 60,
-                  width: 60,
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  width: MediaQuery.of(context).size.height * 0.06,
                   lightBackground: count == 0 ? false : true),
               Padding(
                 padding: const EdgeInsets.only(right: 8.0),
@@ -66,14 +74,23 @@ class HourlyWeatherWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final weatherData = Provider.of<WeatherData>(context);
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: SizedBox(
-        height: 100,
-        child: Row(
-          children: getListWidget(weatherData.weather.hourly!),
+    if (setPortrait) {
+      return SizedBox(
+        height: MediaQuery.of(context).size.height * 0.1,
+        child: ListView(
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          children: getListWidget(weatherData.weather.hourly!, context),
         ),
-      ),
-    );
+      );
+    } else {
+      return SizedBox(
+        height: MediaQuery.of(context).size.height * 0.6,
+        child: ListView(
+          shrinkWrap: true,
+          children: getListWidget(weatherData.weather.hourly!, context),
+        ),
+      );
+    }
   }
 }

@@ -8,8 +8,9 @@ import 'package:provider/provider.dart';
 class CurrentWeatherWidget extends StatelessWidget {
   const CurrentWeatherWidget({
     Key? key,
+    this.setPortrait = true,
   }) : super(key: key);
-
+  final bool setPortrait;
   @override
   Widget build(BuildContext context) {
     final weatherData = Provider.of<WeatherData>(context);
@@ -17,10 +18,13 @@ class CurrentWeatherWidget extends StatelessWidget {
       Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Text(
-            weatherData.weather.timezone!,
-            textAlign: TextAlign.center,
-            style: title1,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text(
+              weatherData.weather.timezone!,
+              textAlign: TextAlign.center,
+              style: title1,
+            ),
           ),
           Text(
               DateFormat.MMMMd()
@@ -32,16 +36,17 @@ class CurrentWeatherWidget extends StatelessWidget {
       Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: getWeatherWidget(weatherData.weather.current!.weather!,
-                height: 155, width: 155),
+                height: MediaQuery.of(context).size.height * 0.2,
+                width: MediaQuery.of(context).size.height * 0.2),
           ),
           Text(weatherData.weather.current!.temp.toString() + " c",
               textAlign: TextAlign.center, style: mainTemp),
         ],
       ),
       Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.symmetric(vertical: 12.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [

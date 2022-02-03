@@ -21,7 +21,6 @@ class _SplashPageState extends State<SplashPage> {
   Timer? _timer;
   int _second = 3; // set timer for 3 second and then direct to next page
 
-  Address address = Address();
   final CurrentLocation _currentLocation = CurrentLocation();
 
   void _startTimer() {
@@ -45,11 +44,16 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future getAddressAction() async {
-    if (await Permission.location.request().isGranted) {
+    bool _isPermission = await Permission.location.request().isGranted;
+    Address address = Address();
+
+    if (_isPermission) {
       address = await _currentLocation.getLocation();
-    } else {
+    }
+    if (address.lat == null || address.lon == null) {
       address = Address.fromDouble(latitude: 37.513272, longitude: 127.094317);
     }
+
     context.read<WeatherData>().setWeatherFromAddress(address);
   }
 

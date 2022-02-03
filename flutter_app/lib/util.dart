@@ -30,3 +30,6 @@ Widget getWeatherWidget(WeatherID weatherID,
   );
   return result;
 }
+
+bool isPortrait(BuildContext context) =>
+    MediaQuery.of(context).orientation == Orientation.portrait;
