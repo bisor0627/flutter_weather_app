@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/design/colors.dart';
 import 'package:flutter_app/design/textstyles.dart';
 import 'package:flutter_app/model/day.dart';
 import 'package:flutter_app/providers/weather_data.dart';
@@ -8,11 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class DailyWeatherWidget extends StatelessWidget {
-  const DailyWeatherWidget({
-    Key? key,
-    this.setPortrait = true,
-  }) : super(key: key);
-  final bool setPortrait;
+  const DailyWeatherWidget({Key? key}) : super(key: key);
   List<Widget> getListWidget(List<Day> daily, BuildContext context) {
     List<Widget> weather = [];
     int count = 0;
@@ -21,10 +18,9 @@ class DailyWeatherWidget extends StatelessWidget {
         weather.add(Padding(
           padding: const EdgeInsets.only(bottom: 12.0, left: 4, right: 4),
           child: DefaultBox1(
+            isAccent: isDark(context) ? false : true,
             height: 74,
-            width: setPortrait
-                ? MediaQuery.of(context).size.width * 0.9
-                : MediaQuery.of(context).size.width * 0.3,
+            width: MediaQuery.of(context).size.width * 0.9,
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Row(
@@ -37,11 +33,11 @@ class DailyWeatherWidget extends StatelessWidget {
                       children: [
                         Text(
                           DateFormat.EEEE().format(getTime(map.dt!)),
-                          style: title2,
+                          style: title2.override(),
                         ),
                         Text(
                           DateFormat.MMMd().format(getTime(map.dt!)),
-                          style: title3,
+                          style: title3.override(),
                         ),
                       ],
                     ),
@@ -53,7 +49,8 @@ class DailyWeatherWidget extends StatelessWidget {
                   getWeatherWidget(map.weather!,
                       width: MediaQuery.of(context).size.height * 0.06,
                       height: MediaQuery.of(context).size.height * 0.06,
-                      lightBackground: true),
+                      lightBackground: false,
+                      context: context),
                 ],
               ),
             ),
@@ -71,14 +68,8 @@ class DailyWeatherWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final weatherData = Provider.of<WeatherData>(context);
 
-    if (setPortrait) {
-      return ListView(
-        children: getListWidget(weatherData.weather.daily!, context),
-      );
-    } else {
-      return ListView(
-        children: getListWidget(weatherData.weather.daily!, context),
-      );
-    }
+    return ListView(
+      children: getListWidget(weatherData.weather.daily!, context),
+    );
   }
 }

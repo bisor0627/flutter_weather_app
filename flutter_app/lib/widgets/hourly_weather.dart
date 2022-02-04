@@ -9,32 +9,27 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class HourlyWeatherWidget extends StatelessWidget {
-  HourlyWeatherWidget({Key? key, this.setPortrait = true}) : super(key: key);
-  final bool setPortrait;
+  HourlyWeatherWidget({Key? key}) : super(key: key);
+
   int count = 0;
   List<Widget> getListWidget(List<Hour> hourly, BuildContext context) {
     List<Widget> weather = [];
 
     for (Hour map in hourly) {
       weather.add(Padding(
-        padding: setPortrait
-            ? const EdgeInsets.only(right: 12.0, bottom: 8)
-            : const EdgeInsets.only(bottom: 12.0, left: 4, right: 4),
+        padding: const EdgeInsets.only(right: 12.0, bottom: 8),
         child: DefaultBox1(
-          height: setPortrait
-              ? MediaQuery.of(context).size.height * 0.1
-              : MediaQuery.of(context).size.height * 0.15,
-          width: setPortrait
-              ? MediaQuery.of(context).size.width * 0.42
-              : MediaQuery.of(context).size.height * 0.45,
-          color: count == 0 ? null : Colors.white,
+          height: MediaQuery.of(context).size.height * 0.1,
+          width: MediaQuery.of(context).size.width * 0.42,
+          isAccent: count == 0 ? true : false,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               getWeatherWidget(map.weather!,
                   height: MediaQuery.of(context).size.height * 0.06,
                   width: MediaQuery.of(context).size.height * 0.06,
-                  lightBackground: count == 0 ? false : true),
+                  lightBackground: count == 0 ? false : true,
+                  context: context),
               Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: Column(
@@ -46,14 +41,22 @@ class HourlyWeatherWidget extends StatelessWidget {
                       style: title2.override(
                           fontWeight: FontWeight.w400,
                           fontSize: 12,
-                          color: count == 0 ? null : Colors.black),
+                          color: isDark(context)
+                              ? textColorLight
+                              : count == 0
+                                  ? textColorLight
+                                  : Colors.black),
                     ),
                     Text(
                       "${map.temp.toString()} c",
                       style: title2.override(
                           fontWeight: FontWeight.w400,
                           fontSize: 16,
-                          color: count == 0 ? null : Colors.black),
+                          color: isDark(context)
+                              ? textColorLight
+                              : count == 0
+                                  ? textColorLight
+                                  : Colors.black),
                     )
                   ],
                 ),
@@ -71,17 +74,11 @@ class HourlyWeatherWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final weatherData = Provider.of<WeatherData>(context);
-    if (setPortrait) {
-      return ListView(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        children: getListWidget(weatherData.weather.hourly!, context),
-      );
-    } else {
-      return ListView(
-        shrinkWrap: true,
-        children: getListWidget(weatherData.weather.hourly!, context),
-      );
-    }
+
+    return ListView(
+      shrinkWrap: true,
+      scrollDirection: Axis.horizontal,
+      children: getListWidget(weatherData.weather.hourly!, context),
+    );
   }
 }

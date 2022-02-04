@@ -12,13 +12,11 @@ class WeatherData with ChangeNotifier {
       address = Address.fromDouble(latitude: 37.513272, longitude: 127.094317);
     }
     _weather = await apiCallService.makeAPICall(address: address);
-    print("set Weather From Address ${_weather.timezone}");
     notifyListeners();
   }
 
   void setWeather(Weather weather) {
     _weather = weather;
-    print("set Weather ${_weather.timezone}");
     notifyListeners();
   }
 }

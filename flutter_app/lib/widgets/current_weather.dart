@@ -6,11 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class CurrentWeatherWidget extends StatelessWidget {
-  const CurrentWeatherWidget({
-    Key? key,
-    this.setPortrait = true,
-  }) : super(key: key);
-  final bool setPortrait;
+  const CurrentWeatherWidget({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final weatherData = Provider.of<WeatherData>(context);
@@ -39,7 +35,8 @@ class CurrentWeatherWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: getWeatherWidget(weatherData.weather.current!.weather!,
                 height: MediaQuery.of(context).size.height * 0.2,
-                width: MediaQuery.of(context).size.height * 0.2),
+                width: MediaQuery.of(context).size.height * 0.2,
+                context: context),
           ),
           Text(weatherData.weather.current!.temp.toString() + " c",
               textAlign: TextAlign.center, style: mainTemp),

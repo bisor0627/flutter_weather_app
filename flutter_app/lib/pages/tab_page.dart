@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/design/colors.dart';
 import 'package:flutter_app/pages/home_page.dart';
 import 'package:flutter_app/pages/daily_page.dart';
 
@@ -29,31 +30,39 @@ class _HomePageState extends State<TabPage>
 
   @override
   Widget build(BuildContext context) {
+    Color unSelectedIcon = isDark(context) ? softNavy : Colors.black;
     return Scaffold(
       body: TabBarView(
         children: [HomePage(), DailyPage()],
         controller: controller,
       ),
-      bottomNavigationBar: TabBar(
-        // indicatorWeight:
-        labelColor: Colors.blue,
-        tabs: const [
-          Tab(
-            icon: Icon(
-              Icons.looks_one,
-              color: Colors.blue,
-              size: 20,
-            ),
+      bottomNavigationBar: Container(
+        height: 70,
+        decoration: BoxDecoration(
+          color: isDark(context) ? darkNavy : lilac,
+          borderRadius: BorderRadius.all(
+            Radius.circular(20),
           ),
-          Tab(
-            icon: Icon(
-              Icons.looks_two,
-              color: Colors.red,
-              size: 20,
+        ),
+        child: TabBar(
+          tabs: const [
+            Tab(
+              icon: Icon(
+                Icons.looks_one,
+                color: Colors.black,
+                size: 20,
+              ),
             ),
-          ),
-        ],
-        controller: controller,
+            Tab(
+              icon: Icon(
+                Icons.looks_two,
+                color: Colors.black,
+                size: 20,
+              ),
+            ),
+          ],
+          controller: controller,
+        ),
       ),
     );
   }

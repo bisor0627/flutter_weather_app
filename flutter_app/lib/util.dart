@@ -19,12 +19,17 @@ DateTime getTime(num unixEpoch) {
 Widget getWeatherWidget(WeatherID weatherID,
     {required double height,
     required double width,
-    bool? lightBackground = false}) {
+    bool? lightBackground = false,
+    required BuildContext context}) {
   String weather = "";
   Widget result;
   result = SvgPicture.asset(
     "assets/images/${weatherID.icon!}.svg",
-    color: lightBackground == false ? Colors.white : Colors.black,
+    color: isDark(context)
+        ? Colors.white
+        : lightBackground!
+            ? Colors.black
+            : Colors.white,
     height: height,
     width: width,
     fit: BoxFit.cover,

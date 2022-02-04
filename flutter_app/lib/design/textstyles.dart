@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 const String primaryFontFamily = 'Roboto Slab';
 const String secondaryFontFamily = 'Roboto';
+
 TextStyle get mainTemp => TextStyle(
     color: Colors.white,
     fontFamily: primaryFontFamily,

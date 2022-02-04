@@ -3,10 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 var brightness = SchedulerBinding.instance!.window.platformBrightness;
+bool isDark(BuildContext context) {
+  return MediaQuery.of(context).platformBrightness == Brightness.dark;
+}
 
 /// *light & dark mode* background
-Color background =
-    brightness == Brightness.light ? fromHex('828CAE') : fromHex('101A39');
+Color backgroundLight = fromHex('828CAE');
+
+/// *light & dark mode* background
+Color backgroundDark = fromHex('060D26');
 
 /// *light & dark mode* Accent Button
 Color lilac = fromHex('A7B4E0');
@@ -22,6 +27,9 @@ Color softNavy = fromHex('557EAE');
 
 /// *light mode* TextButton
 Color navy = fromHex('002688');
+
+Color textColorLight = Color(0xffffffff);
+Color textColorDark = Color(0xff000000);
 
 Color fromHex(String hexString) {
   final buffer = StringBuffer();
